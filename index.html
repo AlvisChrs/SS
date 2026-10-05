@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Stickman Fighter - Ultimate</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <!-- 1. Character Select State -->
+        <div id="character-select" class="screen">
+            <h1 class="title-text">STICKMAN SHOWDOWN</h1>
+            <div class="selection-area">
+                <div class="player-select">
+                    <h2>PLAYER 1</h2>
+                    <div class="char-grid">
+                        <button class="char-btn p1-btn active" onclick="selectChar(1, 'Gojo', this)">Gojo</button>
+                        <button class="char-btn p1-btn" onclick="selectChar(1, 'Goku', this)">Goku</button>
+                        <button class="char-btn p1-btn" onclick="selectChar(1, 'Naruto', this)">Naruto</button>
+                        <button class="char-btn p1-btn" onclick="selectChar(1, 'Itachi', this)">Itachi</button>
+                        <button class="char-btn p1-btn" onclick="selectChar(1, 'Asta', this)">Asta</button>
+                    </div>
+                </div>
+                <div class="player-select">
+                    <h2>CPU (AI)</h2>
+                    <div class="char-grid">
+                        <button class="char-btn cpu-btn" onclick="selectChar(2, 'Gojo', this)">Gojo</button>
+                        <button class="char-btn cpu-btn active" onclick="selectChar(2, 'Goku', this)">Goku</button>
+                        <button class="char-btn cpu-btn" onclick="selectChar(2, 'Naruto', this)">Naruto</button>
+                        <button class="char-btn cpu-btn" onclick="selectChar(2, 'Itachi', this)">Itachi</button>
+                        <button class="char-btn cpu-btn" onclick="selectChar(2, 'Asta', this)">Asta</button>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 20px;">
+                <button id="start-btn" onclick="goToDifficulty()">PROCEED!</button>
+                <button class="char-btn" onclick="showGuide()">GUIDE / HOW TO PLAY</button>
+            </div>
+        </div>
+
+        <!-- 2. Difficulty Select State -->
+        <div id="difficulty-select" class="screen" style="display: none;">
+            <h1 class="title-text">AI DIFFICULTY</h1>
+            <div class="selection-area">
+                <button class="char-btn" onclick="startGame('EASY')">EASY</button>
+                <button class="char-btn" onclick="startGame('MEDIUM')">MEDIUM</button>
+                <button class="char-btn" onclick="startGame('HARD')">HARD</button>
+            </div>
+            <button class="char-btn" onclick="goToSelect()" style="margin-top: 20px;">BACK TO MAIN MENU</button>
+        </div>
+
+        <!-- 3. Pause Overlay -->
+        <div id="pause-menu" style="display: none;">
+            <h2 style="color:white; margin-bottom: 30px; font-size: 30px;">PAUSED</h2>
+            <button onclick="resumeGame()">Resume</button>
+            <button onclick="showGuide()">Guide</button>
+            <button onclick="rematchGame()">Rematch</button>
+            <button onclick="goToSelect()">Main Menu</button>
+        </div>
+
+        <!-- 4. Match Status Banner -->
+        <div id="match-banner" style="display: none;">ROUND OVER</div>
+
+        <!-- 5. Playing UI State -->
+        <div id="ui-layer" style="display: none;">
+            <div class="player-hud p1-hud">
+                <div class="name-bar">
+                    <span id="p1-name-display">P1</span>
+                    <div class="rounds" id="p1-rounds">
+                        <div class="round-dot"></div><div class="round-dot"></div>
+                    </div>
+                </div>
+                <div class="health-bar-container"><div id="player-health"></div></div>
+                <div class="stamina-bar-container"><div id="player-stamina"></div></div>
+                <div class="awakening-bar-container"><div id="player-awakening"></div></div>
+            </div>
+
+            <div class="timer" id="timer">60</div>
+
+            <div class="player-hud cpu-hud">
+                <div class="name-bar" style="justify-content: flex-end;">
+                    <div class="rounds" id="cpu-rounds">
+                        <div class="round-dot"></div><div class="round-dot"></div>
+                    </div>
+                    <span id="cpu-name-display" style="margin-left: 10px;">CPU</span>
+                </div>
+                <div class="health-bar-container"><div id="enemy-health" style="float: right;"></div></div>
+                <div class="stamina-bar-container"><div id="enemy-stamina" style="float: right;"></div></div>
+                <div class="awakening-bar-container"><div id="enemy-awakening" style="float: right;"></div></div>
+            </div>
+        </div>
+
+        <!-- 6. Game Over State -->
+        <div id="game-over" class="screen" style="display: none; background: rgba(0,0,0,0.85);">
+            <h1 class="title-text" id="game-over-title">MATCH OVER</h1>
+            <div class="selection-area">
+                <button class="char-btn" onclick="rematchGame()" style="font-size: 16px;">Rematch</button>
+                <button class="char-btn" onclick="goToSelect()" style="font-size: 16px;">Main Menu</button>
+            </div>
+        </div>
+
+        <canvas id="game-canvas"></canvas>
+
+        <!-- 7. Guide Screen -->
+        <div id="guide-screen" class="screen" style="display: none; background: rgba(0,0,0,0.95); z-index: 1000; overflow-y: auto; padding: 20px;">
+            <h1 class="title-text" style="color: #00E5FF; font-size: 24px;">COMMAND LIST & GUIDE</h1>
+            
+            <div style="color: white; font-family: 'Press Start 2P', monospace; font-size: 10px; line-height: 1.8; max-width: 800px; margin: 0 auto; text-align: left;">
+                <h2 style="color: yellow; font-size: 14px; margin-top: 20px;">BASIC CONTROLS</h2>
+                <p>Move: W, A, S, D<br>
+                   Attack: J (Light), K (Heavy/Sweep), L (Aerial)<br>
+                   Block: Hold S (Down) or move away from attacker<br>
+                   Skill 1 (Ground/Crouch/Jump): E<br>
+                   Skill 2 (Ground/Crouch/Jump): Q<br>
+                   Awakening: Y (Requires 100% Awakening Bar)
+                </p>
+
+                <h2 style="color: #7F00FF; font-size: 14px; margin-top: 30px;">GOJO SATORU</h2>
+                <p><b>Ground E: Hollow Purple</b> - Fires a massive destructive orb forward.<br>
+                   <b>Ground Q: Lapse Blue</b> - Creates a gravity sphere that pulls enemies in.<br>
+                   <b>Crouch (S) + E: Infinity</b> - Activates a barrier that nullifies incoming projectiles and melee attacks for a short time.<br>
+                   <b>Crouch (S) + Q: Reversal Red</b> - A powerful point-blank explosion that knocks enemies far away.<br>
+                   <b>Jump + E: Aerial Purple</b> - Fires a downward diagonal Hollow Purple while mid-air.<br>
+                   <b>Jump + Q: Warp Strike</b> - Teleports directly to the enemy for a surprise blitz attack.<br>
+                   <b>Awakening: Domain Expansion</b> - Freezes time, massively increases stats, and guarantees hits.
+                </p>
+
+                <h2 style="color: #FF8C00; font-size: 14px; margin-top: 30px;">SON GOKU</h2>
+                <p><b>Ground E: Kamehameha</b> - Fires a devastating horizontal energy beam.<br>
+                   <b>Ground Q: Instant Transmission</b> - Teleports directly above the enemy for a drop attack.<br>
+                   <b>Crouch (S) + E: Meteor Smash</b> - A cinematic auto-combo grab. Highly damaging if it connects.<br>
+                   <b>Crouch (S) + Q: Ki Blast Volley</b> - Rapidly fires multiple small homing ki blasts.<br>
+                   <b>Jump + E: Aerial Kamehameha</b> - Fires a massive energy beam diagonally downward.<br>
+                   <b>Jump + Q: Dragon Dive</b> - Dives sharply downwards with intense speed and power.<br>
+                   <b>Awakening: Super Saiyan</b> - Explodes with golden aura, greatly increasing movement speed and reducing skill cooldowns.
+                </p>
+
+                <h2 style="color: #FFA500; font-size: 14px; margin-top: 30px;">UZUMAKI NARUTO</h2>
+                <p><b>Ground E: Rasengan</b> - Dashes forward with a spiraling chakra sphere.<br>
+                   <b>Ground Q: Clone Launcher</b> - Summons a shadow clone that performs a high uppercut.<br>
+                   <b>Crouch (S) + E: Substitution Jutsu</b> - Defensive stance. If hit, teleports behind the enemy with a wooden log.<br>
+                   <b>Crouch (S) + Q: Rasenshuriken</b> - Throws a slow-moving, multi-hitting chakra shuriken.<br>
+                   <b>Jump + E: Aerial Shuriken</b> - Throws 3 shurikens downwards in a spread pattern.<br>
+                   <b>Jump + Q: Aerial Clone Slam</b> - Summons a clone above the enemy that slams them into the ground.<br>
+                   <b>Awakening: Kurama Chakra Mode</b> - Cloaked in orange chakra, greatly increasing speed and turning basic attacks into multi-hit shadow clone barrages. Slowly regenerates health.
+                </p>
+
+                <h2 style="color: red; font-size: 14px; margin-top: 30px;">UCHIHA ITACHI</h2>
+                <p><b>Ground E: Fireball Jutsu</b> - Spits a massive fireball that scorches the ground.<br>
+                   <b>Ground Q: Crow Dash</b> - Transforms into an invincible flock of crows and flies forward at high speed, damaging enemies in the path.<br>
+                   <b>Crouch (S) + E: Sharingan Counter</b> - Genjutsu stance. If attacked from the front, stuns the enemy for 1.5 seconds.<br>
+                   <b>Crouch (S) + Q: Amaterasu</b> - Ignites black flames directly under the enemy's feet, dealing damage over time.<br>
+                   <b>Jump + E: Phoenix Fire</b> - Spits 3 small fireballs diagonally downwards.<br>
+                   <b>Jump + Q: Aerial Crow Slam</b> - Dives downwards wrapped in an illusion of crows.<br>
+                   <b>Awakening: Susanoo</b> - Summons a spectral ribcage granting Super Armor (immunity to stagger/knockback) and 80% damage reduction. Basic attacks gain doubled range.
+                </p>
+                
+                <h2 style="color: grey; font-size: 14px; margin-top: 30px;">ASTA STARIA</h2>
+                <p><b>Ground E: Black Slash</b> - Swings the sword to fire a fast-traveling wave of anti-magic that damages enemies.<br>
+                   <b>Ground Q: Bull Thrust</b> - Dashes at extreme speed with sword pointed forward, causing wall-bounce on hit.<br>
+                   <b>Crouch (S) + E: Demon-Destroyer Stance</b> - Plants sword in the ground. For 1.5s, immune to projectile hitstun and reflects minor damage to the attacker.<br>
+                   <b>Crouch (S) + Q: Spinning Slash</b> - Spins 360 degrees, dealing multi-hit melee damage.<br>
+                   <b>Jump + E: Black Meteorite</b> - Dives aggressively towards the enemy. On hit, causes massive hit-stop.<br>
+                   <b>Jump + Q: Slam Down</b> - Plunges vertically downward, creating a massive crater on impact.<br>
+                   <b>Awakening: Black Asta</b> - Spouts a demon wing. For 10s, passively destroys all incoming projectiles and gains +40% movement speed to easily chase down zoners. No damage buff.
+                </p>
+            </div>
+            <button class="char-btn" onclick="closeGuide()" style="margin-top: 40px; display: block; margin-left: auto; margin-right: auto;">CLOSE GUIDE</button>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/classes.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>

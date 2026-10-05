@@ -1,0 +1,48 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background-color: #111; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Press Start 2P', monospace; }
+
+#game-container { position: relative; width: 1024px; height: 576px; overflow: hidden; border: 4px solid #fff; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+
+#game-canvas { width: 100%; height: 100%; pointer-events: none; position: absolute; top: 0; left: 0; z-index: 1; }
+
+.screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; pointer-events: auto; }
+.title-text { font-size: 36px; margin-bottom: 40px; color: #00E5FF; text-shadow: 4px 4px 0px #FF0055; }
+
+.selection-area { display: flex; gap: 50px; margin-bottom: 40px; }
+.player-select h2 { font-size: 16px; margin-bottom: 20px; text-align: center; }
+.char-grid { display: flex; flex-direction: column; gap: 10px; }
+.char-btn { background: #333; color: white; border: 2px solid #555; padding: 15px 30px; font-family: inherit; font-size: 14px; cursor: pointer; transition: 0.2s; position: relative; z-index: 1001; pointer-events: auto; }
+.char-btn:hover { background: #666; color: #00E5FF; border-color: #fff; }
+.char-btn.active { border-color: #00E5FF; background: #444; box-shadow: 0 0 10px #00E5FF; color: #00E5FF; }
+
+#start-btn { padding: 20px 40px; font-size: 24px; background: #FF0000; color: white; border: none; cursor: pointer; font-family: inherit; transition: transform 0.1s; position: relative; z-index: 1001; pointer-events: auto; }
+#start-btn:hover { transform: scale(1.1); background: #FF4500; color: #00E5FF; box-shadow: 0 0 15px #FF4500; }
+
+/* UI Layer */
+#ui-layer { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; display: flex; justify-content: space-between; z-index: 5; pointer-events: none; }
+.player-hud { width: 40%; display: flex; flex-direction: column; }
+.name-bar { display: flex; align-items: center; font-size: 14px; margin-bottom: 10px; text-shadow: 2px 2px 0 #000; }
+
+.health-bar-container { width: 100%; height: 25px; background: #333; border: 2px solid white; position: relative; }
+#player-health { width: 100%; height: 100%; background: #00FF00; transition: width 0.1s linear; }
+#enemy-health { width: 100%; height: 100%; background: #FF0000; transition: width 0.1s linear; }
+
+.stamina-bar-container { width: 100%; height: 10px; background: #333; border: 1px solid white; margin-top: 5px; }
+#player-stamina { width: 100%; height: 100%; background: #00BFFF; transition: width 0.1s linear; }
+#enemy-stamina { width: 100%; height: 100%; background: #00BFFF; transition: width 0.1s linear; }
+
+/* AWAKENING SYSTEM & ROUNDS */
+.rounds { display: flex; align-items: center; margin: 0 10px; }
+.round-dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid white; display: inline-block; margin: 0 3px; background: transparent; }
+.round-dot.won { background-color: #00E5FF; box-shadow: 0 0 5px #00E5FF; }
+
+.awakening-bar-container { width: 100%; height: 8px; background: #333; margin-top: 2px; border: 1px solid white; }
+#player-awakening, #enemy-awakening { height: 100%; background: #FF4500; transition: width 0.1s linear; width: 0%; box-shadow: 0 0 10px #FF4500; }
+
+#pause-menu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); flex-direction: column; justify-content: center; align-items: center; z-index: 100; pointer-events: auto; }
+#pause-menu button { margin: 10px; padding: 15px 30px; font-family: inherit; font-size: 16px; cursor: pointer; background: #fff; color: #000; border: none; }
+#pause-menu button:hover { background: #00E5FF; }
+
+#match-banner { position: absolute; top: 40%; left: 0; width: 100%; text-align: center; color: white; font-family: inherit; font-size: 40px; text-shadow: 4px 4px 0 black; z-index: 50; }
+
+.timer { width: 10%; display: flex; justify-content: center; align-items: flex-start; font-size: 32px; font-weight: bold; text-shadow: 3px 3px 0 #000; }
