@@ -635,6 +635,7 @@ class Fighter {
     }
 
     startAttack(attackObj) {
+        if (window.AudioManager) window.AudioManager.playWhoosh();
         this.isAttacking = true; this.currentAttack = attackObj; this.attackFrame = 0; this.skillFired = false;
         this.attackState = 'startup'; this.hasHit = false; 
         
@@ -764,6 +765,7 @@ class Fighter {
         const actualDamage = baseDamage * (attacker ? attacker.damageMult : 1);
 
         if (this.isBlocking) {
+            if (window.AudioManager) window.AudioManager.playBlock();
             if (this.blockTimer <= 15) { 
                 globalState.hitstop = 30; globalState.flashWhite = 1.0;
                 if (attacker && attacker instanceof Fighter) {
@@ -787,6 +789,7 @@ class Fighter {
             }
         }
 
+        if (window.AudioManager) window.AudioManager.playHit();
         if (attacker) attacker.awakening = Math.min(100, attacker.awakening + 10); 
 
         this.health -= actualDamage;
