@@ -34,6 +34,7 @@ window.closeGuide = function() {
 };
 
 window.selectChar = function(playerNum, charName, btnElement) {
+    if (window.AudioManager) window.AudioManager.playUI();
     if (playerNum === 1) {
         document.querySelectorAll('.p1-btn').forEach(b => b.classList.remove('active')); 
         btnElement.classList.add('active'); p1CharSelection = charName;
@@ -44,6 +45,7 @@ window.selectChar = function(playerNum, charName, btnElement) {
 };
 
 function goToDifficulty() {
+    if (window.AudioManager) window.AudioManager.playUI();
     selectScreen.style.display = 'none';
     difficultyScreen.style.display = 'flex';
 }
@@ -98,8 +100,10 @@ function resetRound(isFirst = false) {
         player.hitstunFrames = 0; enemy.hitstunFrames = 0;
         player.isDead = false; enemy.isDead = false;
         player.inputBuffer = []; enemy.inputBuffer = [];
+        player.comboCount = 0; enemy.comboCount = 0;
 
         showBanner('FIGHT!', 1000);
+        if (window.AudioManager) window.AudioManager.playStart();
         setTimeout(() => {
             if (currentGameState !== 'PAUSED') {
                 currentGameState = 'PLAYING';
@@ -164,6 +168,30 @@ function updateUI() {
     for(let i=0; i<2; i++) { if (i < p1Rounds) p1Dots[i].classList.add('won'); else p1Dots[i].classList.remove('won'); }
     const cpuDots = document.querySelectorAll('#cpu-rounds .round-dot');
     for(let i=0; i<2; i++) { if (i < p2Rounds) cpuDots[i].classList.add('won'); else cpuDots[i].classList.remove('won'); }
+
+    const p1ComboContainer = document.getElementById('p1-combo-container');
+    const p1ComboText = document.getElementById('p1-combo-text');
+    if (enemy.comboCount >= 2) {
+        p1ComboContainer.classList.add('active');
+        if (p1ComboText.innerText != enemy.comboCount) {
+            p1ComboText.innerText = enemy.comboCount;
+            p1ComboText.classList.remove('combo-pop'); void p1ComboText.offsetWidth; p1ComboText.classList.add('combo-pop');
+        }
+    } else {
+        p1ComboContainer.classList.remove('active');
+    }
+
+    const cpuComboContainer = document.getElementById('cpu-combo-container');
+    const cpuComboText = document.getElementById('cpu-combo-text');
+    if (player.comboCount >= 2) {
+        cpuComboContainer.classList.add('active');
+        if (cpuComboText.innerText != player.comboCount) {
+            cpuComboText.innerText = player.comboCount;
+            cpuComboText.classList.remove('combo-pop'); void cpuComboText.offsetWidth; cpuComboText.classList.add('combo-pop');
+        }
+    } else {
+        cpuComboContainer.classList.remove('active');
+    }
 }
 
 function processCollisions() {

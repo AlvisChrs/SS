@@ -65,6 +65,16 @@
 
         <!-- 5. Playing UI State -->
         <div id="ui-layer" style="display: none;">
+            <!-- Combo Counters -->
+            <div id="p1-combo-container" class="combo-container" style="left: 50px;">
+                <span id="p1-combo-text" class="combo-text">0</span>
+                <div class="combo-label">HITS</div>
+            </div>
+            <div id="cpu-combo-container" class="combo-container" style="right: 50px; text-align: right;">
+                <span id="cpu-combo-text" class="combo-text">0</span>
+                <div class="combo-label">HITS</div>
+            </div>
+
             <div class="player-hud p1-hud">
                 <div class="name-bar">
                     <span id="p1-name-display">P1</span>
@@ -171,6 +181,7 @@
         </div>
     </div>
 
+    <script src="js/audio.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/classes.js"></script>
     <script src="js/index.js"></script>

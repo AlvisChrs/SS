@@ -46,3 +46,10 @@ body { background-color: #111; color: white; display: flex; justify-content: cen
 #match-banner { position: absolute; top: 40%; left: 0; width: 100%; text-align: center; color: white; font-family: inherit; font-size: 40px; text-shadow: 4px 4px 0 black; z-index: 50; }
 
 .timer { width: 10%; display: flex; justify-content: center; align-items: flex-start; font-size: 32px; font-weight: bold; text-shadow: 3px 3px 0 #000; }
+
+/* COMBO UI */
+.combo-container { position: absolute; top: 150px; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 10; display: flex; flex-direction: column; align-items: center; }
+.combo-container.active { opacity: 1; }
+.combo-text { font-size: 48px; color: #FF0055; text-shadow: 4px 4px 0px #fff; font-style: italic; font-weight: bold; transform: scale(1); transition: transform 0.1s; }
+.combo-label { font-size: 16px; color: #fff; text-shadow: 2px 2px 0px #FF0055; }
+.combo-pop { transform: scale(1.5) !important; color: #00E5FF !important; text-shadow: 4px 4px 0px #fff !important; }
